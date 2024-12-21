@@ -1,0 +1,104 @@
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Vacacional</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Sistema Vacacional</h1>
+        <form id="vacationForm">
+            <label for="nombre">Nombre del empleado:</label>
+            <input type="text" id="nombre" required>
+
+            <label for="departamento">Departamento:</label>
+            <select id="departamento" required>
+                <option value="1">Departamento 1</option>
+                <option value="2">Departamento 2</option>
+                <option value="3">Departamento 3</option>
+            </select>
+
+            <label for="fechaIngreso">Fecha de ingreso:</label>
+            <input type="date" id="fechaIngreso" required>
+
+            <label for="salario">Salario mensual (RD$):</label>
+            <input type="number" id="salario" step="0.01" min="0" required>
+
+            <button type="button" onclick="calcularVacaciones()">Calcular</button>
+        </form>
+
+        <div id="resultado" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function calcularVacaciones() {
+            const nombre = document.getElementById('nombre').value;
+            const departamento = parseInt(document.getElementById('departamento').value);
+            const fechaIngreso = new Date(document.getElementById('fechaIngreso').value);
+            const salario = parseFloat(document.getElementById('salario').value);
+
+            // Calcular antigüedad en años (diferencia entre fecha actual y fecha de ingreso)
+            const hoy = new Date();
+            let antiguedad = hoy.getFullYear() - fechaIngreso.getFullYear();
+            const m = hoy.getMonth() - fechaIngreso.getMonth();
+            if (m < 0 || (m === 0 && hoy.getDate() < fechaIngreso.getDate())) {
+                antiguedad--;
+            }
+
+            let diasVacaciones = 0;
+
+            // Determinar días de vacaciones según el departamento y antigüedad
+            if (departamento === 1) {
+                if (antiguedad >= 1 && antiguedad < 2) {
+                    diasVacaciones = 6;
+                } else if (antiguedad >= 2 && antiguedad <= 6) {
+                    diasVacaciones = 14;
+                } else if (antiguedad >= 7) {
+                    diasVacaciones = 20;
+                }
+            } else if (departamento === 2) {
+                if (antiguedad >= 1 && antiguedad < 2) {
+                    diasVacaciones = 7;
+                } else if (antiguedad >= 2 && antiguedad <= 6) {
+                    diasVacaciones = 15;
+                } else if (antiguedad >= 7) {
+                    diasVacaciones = 22;
+                }
+            } else if (departamento === 3) {
+                if (antiguedad >= 1 && antiguedad < 2) {
+                    diasVacaciones = 10;
+                } else if (antiguedad >= 2 && antiguedad <= 6) {
+                    diasVacaciones = 20;
+                } else if (antiguedad >= 7) {
+                    diasVacaciones = 30;
+                }
+            }
+
+            // Calcular el monto vacacional
+            const salarioDiario = salario / 23.83;
+            const montoVacacional = diasVacaciones * salarioDiario;
+
+            // Mostrar resultado
+            const resultadoDiv = document.getElementById('resultado');
+            if (diasVacaciones > 0) {
+                resultadoDiv.style.display = 'block';
+                resultadoDiv.innerHTML = ` 
+                    <strong>Resultados para ${nombre}:</strong><br>
+                    Días de vacaciones: ${diasVacaciones}<br>
+                    Monto correspondiente: RD$ ${montoVacacional.toFixed(2)}
+                `;
+            } else {
+                resultadoDiv.style.display = 'block';
+                resultadoDiv.innerHTML = ` 
+                    <strong>${nombre} aún no tiene derecho a vacaciones.</strong>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
+
